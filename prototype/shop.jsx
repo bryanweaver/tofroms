@@ -466,7 +466,7 @@ const ScreenSuccess = ({ onBackToShop, orderNum, fromName }) => (
     <Status />
     <div className="topnav">
       <Wordmark />
-      <a href="/index.html" className="tx-mono" style={{ textTransform: "none", letterSpacing: "0.04em", color: "var(--ink-60)" }}>your orders ↗</a>
+      <a href="scan.html?view=orders" className="tx-mono" style={{ textTransform: "none", letterSpacing: "0.04em", color: "var(--ink-60)" }}>your orders ↗</a>
     </div>
     <div className="screen-body">
       <div style={{ paddingTop: 28, display: "flex", justifyContent: "center" }}>
@@ -483,19 +483,12 @@ const ScreenSuccess = ({ onBackToShop, orderNum, fromName }) => (
         <p className="tx-hand-sm" style={{ marginTop: 8 }}>we'll write when they're packed — usually within a day.</p>
       </div>
 
-      <div className="scan-card" style={{ marginTop: 20, cursor: "pointer" }} onClick={() => { try { localStorage.setItem('tf-arrival', 'from-success'); } catch(_) {} window.location.href = "prototype.html"; }}>
-        <div className="qr" />
-        <div className="col gap-4" style={{ flex: 1 }}>
-          <span className="tx-h3" style={{ fontSize: 16 }}>while you wait — start a draft</span>
-          <span className="tx-hand-sm">save a message now; pick which sticker carries it when they arrive.</span>
-        </div>
-      </div>
-
       <div style={{ height: 24 }} />
     </div>
     <div className="screen-foot">
-      <button className="btn btn-primary btn-block" onClick={() => { try { localStorage.setItem('tf-arrival', 'from-success'); } catch(_) {} window.location.href = "prototype.html"; }}>start a draft →</button>
-      <span className="tx-mono" style={{ textAlign: "center", color: "var(--ink-40)" }}>order tf-{orderNum.replace('TF-', '')}</span>
+      <button className="btn btn-primary btn-block" onClick={() => { window.location.href = "scan.html?view=orders"; }}>track this order →</button>
+      <a href="/prototype.html" className="tx-hand-sm" style={{ textAlign: "center", color: "var(--ink-60)", textDecoration: "none", cursor: "pointer" }} onClick={() => { try { localStorage.setItem('tf-arrival', 'from-success'); } catch(_) {} }}>or sketch a draft now — we'll attach it to a sticker when you scan ↗</a>
+      <span className="tx-mono" style={{ textAlign: "center", color: "var(--ink-40)", textTransform: "none", letterSpacing: "0.04em", marginTop: 4 }}>order tf-{orderNum.replace('TF-', '')}</span>
     </div>
   </div>
 );

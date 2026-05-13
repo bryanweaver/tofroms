@@ -355,6 +355,94 @@ body::before {
 .status.draft { color: var(--ink-60); background: rgba(59,42,47,0.06); }
 .status.blank { color: var(--ink-40); background: rgba(59,42,47,0.04); border: 1px dashed var(--ink-24); }
 
+/* ─── orders screen (pre-arrival) ─── */
+.order-card {
+  margin: 18px 24px 0; padding: 18px;
+  background: var(--paper-2);
+  border: 1px solid var(--ink-08);
+  border-radius: 18px;
+  display: flex; flex-direction: column; gap: 18px;
+  position: relative; overflow: hidden;
+}
+.order-card::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2'/><feColorMatrix values='0 0 0 0 0.231  0 0 0 0 0.165  0 0 0 0 0.184  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
+  mix-blend-mode: multiply; opacity: 0.4;
+}
+.order-hero {
+  display: flex; align-items: center; gap: 16px;
+  position: relative; z-index: 2;
+}
+.order-stack {
+  width: 92px; flex: 0 0 92px;
+  position: relative;
+  display: flex; align-items: center; justify-content: center;
+  height: 56px;
+}
+.order-sticker {
+  width: 44px; aspect-ratio: 1;
+  background: var(--paper); border-radius: 10px;
+  display: grid; place-items: center; padding: 6%;
+  box-shadow: 0 4px 10px -3px rgba(0,0,0,0.25);
+  position: absolute;
+}
+.order-sticker:nth-child(1) { left: 0; }
+.order-sticker:nth-child(2) { left: 50%; transform: translateX(-50%) rotate(0deg); z-index: 2; }
+.order-sticker:nth-child(3) { right: 0; }
+.order-sticker.bare { background: transparent; box-shadow: none; padding: 0; }
+.order-sticker svg { width: 100%; height: 100%; display: block; }
+.order-summary {
+  display: flex; flex-direction: column; gap: 2px;
+}
+
+.order-timeline {
+  position: relative; z-index: 2;
+  display: flex; flex-direction: column;
+  padding-left: 4px;
+}
+.ot-row {
+  display: grid; grid-template-columns: 18px 1fr auto; align-items: baseline;
+  gap: 10px; padding: 6px 0;
+  position: relative;
+}
+.ot-row + .ot-row::before {
+  content: ""; position: absolute; left: 8px; top: -10px; bottom: 50%;
+  width: 1px; background: var(--ink-12);
+}
+.ot-dot {
+  width: 8px; height: 8px; border-radius: 999px;
+  background: var(--paper); border: 2px solid var(--ink-24);
+  align-self: center; justify-self: center;
+}
+.ot-row.done .ot-dot { background: var(--sage); border-color: var(--sage); }
+.ot-row.active .ot-dot { background: var(--clay); border-color: var(--clay); box-shadow: 0 0 0 4px rgba(201,123,90,0.18); }
+.ot-row.pending .ot-dot { background: transparent; border-style: dashed; }
+.ot-k { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--plum); }
+.ot-row.pending .ot-k { color: var(--ink-40); }
+.ot-at { font-family: var(--mono); font-size: 10px; letter-spacing: 0.04em; color: var(--ink-60); text-transform: none; }
+
+/* save-order block (passwordless prompt) */
+.save-order {
+  margin: 18px 24px 0; padding: 16px 18px;
+  background: var(--blush); border-radius: 14px;
+  display: flex; flex-direction: column; gap: 6px;
+  position: relative; overflow: hidden;
+}
+.save-order::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background-image: radial-gradient(circle, rgba(248,241,231,0.5) 1px, transparent 1px);
+  background-size: 4px 4px; opacity: 0.4;
+}
+.save-order > * { position: relative; z-index: 1; }
+.save-order .save-link {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em;
+  color: var(--clay-2); cursor: pointer; align-self: flex-start;
+  padding-top: 4px;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.15s;
+}
+.save-order .save-link:hover { border-bottom-color: var(--clay-2); }
+
 /* tabbar */
 .tabbar {
   position: absolute; bottom: 22px; left: 18px; right: 18px;

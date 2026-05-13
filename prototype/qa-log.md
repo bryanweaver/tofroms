@@ -4,6 +4,47 @@ Running log of UX issues found by the tester and fixes applied by the developer.
 
 ---
 
+## Iteration 26 — 2026-05-13 02:30 UTC  ·  **post-launch fixes**
+
+*The user pushed the prototype to GitHub Pages and then caught three real product issues by walking the live flow.*
+
+### Findings (user, walking the live site)
+
+| # | Severity | Issue |
+|---|---------:|-------|
+| 1 | **high** | "Start a draft" as the success-screen primary CTA before stickers have shipped is *weird* — you're writing with nothing to attach the draft to, and you don't even know which sticker you'll use. The flow only makes sense AFTER scanning. |
+| 2 | **high** | "Your orders ↗" link in the success topnav (added in iter 14) was a **dead link** — pointed to `/index.html` but no orders screen ever existed. |
+| 3 | medium | No account-creation moment anywhere — purchase is guest, the email collected at checkout is never tied to anything they can come back to. Account-light pattern was missing. |
+
+### Fixes applied
+
+| # | Where | What changed |
+|---|-------|--------------|
+| 1 | `shop.jsx` ScreenSuccess | **Primary CTA reframed**: `start a draft →` → **`track this order →`** (routes to the new orders screen). The "while you wait" scan-card is gone — replaced by a quiet ghost text link below the primary: *"or sketch a draft now — we'll attach it to a sticker when you scan ↗"*. The draft path stays available but is no longer the default beat. The arrival flag (`tf-arrival = from-success`) still seeds the compose welcome eyebrow if they take that path. |
+| 2 | `scan.jsx` new `ScreenOrders` | Net-new screen at route `scan.html?view=orders`. Renders: order id + placed date + ETA + headline `on its way.` / hand-script sub `arrives between may 14 – 15`; an order card with stacked sticker thumbnails + pack summary + price; a 4-row order timeline (`paid → packing → in the mail → in your hands`) with sage-done / clay-active / dashed-pending states; a soft passwordless prompt block `saved to rachel@…il.com / we'll send a one-tap link when they ship.` with an `↗ email me a sign-in link` affordance; and below: `or, sketch a draft now — we'll attach it to a sticker when you scan.` + a ghost `sketch a draft →` button. Tab bar present. |
+| 2a | `shop.jsx` ScreenSuccess topnav | `your orders ↗` now correctly points to `scan.html?view=orders`. |
+| 3 | `scan.jsx` STEPS array + route table | Added the new `orders` step at position 01 of the `account` group; rest of the group shifted down. URL param routing in `App` picks up `?view=orders` unchanged. |
+| — | `scan.css` `.order-card`, `.order-timeline`, `.save-order`, `.order-stack`, `.order-sticker` | New styles. Order card uses the same paper-2 + grain noise as other cards; timeline uses sage (done) / clay (active) / dashed (pending) dots; save-order block sits on blush like the other CTA-cards; sticker stack absolute-positioned so 3 fan out in 92 px without overflowing. |
+
+### Verification
+
+- **Success screen** — re-screenshotted: primary CTA reads `track this order →`; ghost text link below explains the draft is contingent on scanning; topnav `your orders ↗` now active. ✓
+- **Orders screen** — re-screenshotted at 390 × 932 (real-phone-tall): `on its way.` headline, order card with packing-active state, save-order prompt with email-link affordance, sketch-a-draft ghost button. Tab bar present. ✓
+- **Click-through** — `track this order →` on success → lands on orders screen. Path is live. ✓
+
+### Deploy state
+
+The repo `bryanweaver/tofroms` is live on GitHub Pages (https://bryanweaver.github.io/tofroms/). These iter-26 changes have been made locally; need to commit + push to update the live site.
+
+### Carryover
+
+- The orders screen is a single-order demo. Production would render a list when multiple orders exist; "your orders ↗" plural is currently semi-accurate.
+- The `email me a sign-in link` action triggers an alert. Production would call a passwordless-auth endpoint.
+- "in the mail" / "in your hands" timeline rows have empty `at` dates in the demo — production would populate from the shipping carrier.
+- The "sketch a draft" path from orders sets no special arrival flag yet — could mark `tf-arrival = from-orders` for tone differentiation if desired.
+
+---
+
 ## Iteration 25 — 2026-05-13 01:48 UTC
 *Viewport: 390 × 844. Closing iter-24's two deferred items (envelope selected state + opened-screen footer rhythm).*
 

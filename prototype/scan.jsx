@@ -25,11 +25,12 @@ const STEPS = [
   { id: "recipient-open",group: "recipient",    label: "02 · opening" },
   { id: "recipient-after",group: "recipient",   label: "03 · after reveal" },
 
-  { id: "account",       group: "account",      label: "01 · home" },
-  { id: "card-detail",   group: "account",      label: "02 · card detail" },
-  { id: "stickers",      group: "account",      label: "03 · sticker library" },
-  { id: "drafts",        group: "account",      label: "04 · drafts" },
-  { id: "notifs",        group: "account",      label: "05 · notifications" },
+  { id: "orders",        group: "account",      label: "01 · your orders (in transit)" },
+  { id: "account",       group: "account",      label: "02 · home" },
+  { id: "card-detail",   group: "account",      label: "03 · card detail" },
+  { id: "stickers",      group: "account",      label: "04 · sticker library" },
+  { id: "drafts",        group: "account",      label: "05 · drafts" },
+  { id: "notifs",        group: "account",      label: "06 · notifications" },
 
   { id: "scan-claimed",  group: "empty states", label: "— sticker already claimed" },
   { id: "account-empty", group: "empty states", label: "— day-1 account" },
@@ -625,6 +626,82 @@ const TabBar = ({ active, onTab }) => (
 );
 
 /* ─── ACCOUNT 01 home ─── */
+/* ─── ACCOUNT 01 orders — pre-arrival state, before any sticker has been scanned ─── */
+const ScreenOrders = ({ go: goTab }) => {
+  // demo order — matches the success screen
+  const order = {
+    id: "TF-2510",
+    pack: "love letter",
+    qty: 8,
+    price: 24,
+    placedAt: "may 12",
+    eta: "may 14 – 15",
+    email: "rachel@…il.com",
+    stage: "packing",      // packing → shipped → delivered
+  };
+  return (
+    <>
+      <Status />
+      <TopNav left="" right="settings" onRight={() => alert('settings — coming soon (this is a prototype)')} />
+      <div className="screen with-tabbar">
+        <div className="screen-body">
+          <div className="p-h col gap-4" style={{ paddingTop: 4 }}>
+            <span className="tx-mono" style={{ textTransform: "none", letterSpacing: "0.04em", color: "var(--ink-60)" }}>order {order.id} · placed {order.placedAt}</span>
+            <h1 className="tx-h1">on its <em>way.</em></h1>
+            <p className="tx-hand-sm">arrives between {order.eta}.</p>
+          </div>
+
+          {/* order card with pack hero + status timeline */}
+          <div className="order-card">
+            <div className="order-hero">
+              <div className="order-stack">
+                {[0,1,2].map(i => (
+                  <span key={i} className="order-sticker" style={{ transform: `rotate(${(i-1)*7}deg)` }}>
+                    <FancyQR seed={`order-${i}`} iconId="love" color={i===1 ? "#F8F1E7" : "#A85F40"} accent={i===1 ? "#F8F1E7" : "#A85F40"} bg={i===1 ? "#C97B5A" : "var(--paper)"} size={62} />
+                  </span>
+                ))}
+              </div>
+              <div className="order-summary">
+                <span className="tx-h3">{order.pack} pack</span>
+                <span className="tx-hand-sm">{order.qty} stickers</span>
+                <span className="tx-mono" style={{ textTransform: "none", letterSpacing: "0.04em", color: "var(--ink-60)" }}>${order.price}</span>
+              </div>
+            </div>
+
+            <div className="order-timeline">
+              <div className={`ot-row done`}>
+                <span className="ot-dot" /><span className="ot-k">paid</span><span className="ot-at">{order.placedAt}</span>
+              </div>
+              <div className={`ot-row ${order.stage === "packing" ? "active" : "done"}`}>
+                <span className="ot-dot" /><span className="ot-k">packing</span><span className="ot-at">{order.stage === "packing" ? "today" : ""}</span>
+              </div>
+              <div className={`ot-row ${order.stage === "shipped" ? "active" : (order.stage === "delivered" ? "done" : "pending")}`}>
+                <span className="ot-dot" /><span className="ot-k">in the mail</span><span className="ot-at">{order.stage === "shipped" ? "today" : ""}</span>
+              </div>
+              <div className={`ot-row ${order.stage === "delivered" ? "active" : "pending"}`}>
+                <span className="ot-dot" /><span className="ot-k">in your hands</span><span className="ot-at">{order.eta}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* gentle save-this-order affordance — passwordless via the email already on file */}
+          <div className="save-order">
+            <span className="tx-mono" style={{ textTransform: "none", letterSpacing: "0.04em", color: "var(--ink-60)" }}>saved to {order.email}</span>
+            <p className="tx-hand-sm">we'll send a one-tap link when they ship. tap it again any time to come back here.</p>
+            <span className="save-link" onClick={() => alert('we just emailed a sign-in link to ' + order.email)}>↗ email me a sign-in link</span>
+          </div>
+
+          <div className="p-h col gap-8" style={{ paddingTop: 6, paddingBottom: 4 }}>
+            <p className="tx-hand-sm" style={{ textAlign: "center", color: "var(--ink-60)" }}>or, sketch a draft now — we'll attach it to a sticker when you scan.</p>
+            <a href="/prototype.html" className="btn btn-ghost btn-block" style={{ textDecoration: "none" }}>sketch a draft →</a>
+          </div>
+        </div>
+        <TabBar active="account" onTab={goTab} />
+      </div>
+    </>
+  );
+};
+
 const ScreenAccount = ({ go: goTab, openCard, empty = false }) => {
   const go = (a) => typeof a === "string" ? goTab(a) : openCard(a.cardId);
   if (empty) {
@@ -940,6 +1017,7 @@ const App = () => {
       case "recipient":       return <ScreenRecipient onOpen={() => go("recipient-open")} />;
       case "recipient-open":  return <ScreenRecipientOpen onDone={() => go("recipient-after")} />;
       case "recipient-after": return <ScreenRecipientAfter onReply={() => go("recipient-after")} onKeep={() => go("signup")} onClose={() => go("lock")} />;
+      case "orders":          return <ScreenOrders go={go} />;
       case "account":         return <ScreenAccount go={go} openCard={openCard} empty={false} />;
       case "card-detail":     return <ScreenCardDetail cardId={cardId} onBack={() => go("account")} />;
       case "stickers":        return <ScreenStickers go={go} openCard={openCard} mode="normal" />;
