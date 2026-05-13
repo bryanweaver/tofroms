@@ -167,7 +167,7 @@ body::before {
 .chip-scroll {
   display: flex; gap: 8px; padding: 10px 28px 14px;
   overflow-x: auto; scrollbar-width: none;
-  position: sticky; top: 36px; z-index: 8;
+  position: sticky; top: 0; z-index: 8;
   background: var(--paper);
   border-bottom: 1px solid var(--ink-08);
   backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
