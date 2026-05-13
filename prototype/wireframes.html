@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>to/froms · wireframes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..600,30..100&family=DM+Sans:wght@400;500;600&family=Caveat:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body data-screen-label="00 to/froms wireframe doc">
+<main id="doc">
+  <header class="doc-head">
+    <div>
+      <div class="meta">
+        <span>WIREFRAME DOC · v0.1</span>
+        <span>MID-FI · MOBILE · 390×844</span>
+        <span>3 DIRECTIONS PER FLOW</span>
+      </div>
+      <h1 class="doc-title">to/froms — <em>wireframes.</em></h1>
+      <p class="doc-sub">a card that lives on the gift. exploring layout & hierarchy across the six flows.</p>
+    </div>
+    <div style="text-align:right; font-family: var(--mono); font-size: 11px; color: var(--ink-60); letter-spacing: 0.06em; text-transform: uppercase;">
+      prepared by claude design<br/>
+      9 may 2026<br/>
+      <span style="color: var(--clay);">draft — not for stakeholders</span>
+    </div>
+  </header>
+
+  <nav class="doc-toc">
+    <a href="#style">00 · style frame</a><span class="dot">·</span>
+    <a href="#landing">01 · landing</a><span class="dot">·</span>
+    <a href="#shop">02 · shop & PDP</a><span class="dot">·</span>
+    <a href="#cart">03 · cart, checkout, success</a><span class="dot">·</span>
+    <a href="#activation">04 · activation</a><span class="dot">·</span>
+    <a href="#reveal">05 · recipient reveal</a>
+  </nav>
+
+  <div class="legend">
+    <span class="pair"><span class="swatch-mini" style="background:#F8F1E7"></span>cream paper</span>
+    <span class="pair"><span class="swatch-mini" style="background:#F4D6CC"></span>petal blush</span>
+    <span class="pair"><span class="swatch-mini" style="background:#C97B5A"></span>clay</span>
+    <span class="pair"><span class="swatch-mini" style="background:#7C8A6B"></span>sage</span>
+    <span class="pair"><span class="swatch-mini" style="background:#3B2A2F"></span>plum ink</span>
+    <span style="margin-left: auto; font-family: var(--hand); font-size: 16px; text-transform: none; letter-spacing: 0; color: var(--ink-80);">scroll horizontally inside each strip · annotations are decisions to make.</span>
+  </div>
+
+  <div id="app"></div>
+
+  <footer>
+    <span>to/froms · wireframe doc</span>
+    <span>next: pick a direction per flow → mid-fi mocks</span>
+  </footer>
+</main>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script type="text/babel" src="phone.jsx"></script>
+<script type="text/babel" src="screens/style-frame.jsx"></script>
+<script type="text/babel" src="screens/landing.jsx"></script>
+<script type="text/babel" src="screens/shop.jsx"></script>
+<script type="text/babel" src="screens/cart.jsx"></script>
+<script type="text/babel" src="screens/activation.jsx"></script>
+<script type="text/babel" src="screens/reveal.jsx"></script>
+
+<script type="text/babel">
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "showAnnotations": true,
+  "sketchDensity": "balanced",
+  "directions": [
+    "A",
+    "B",
+    "C"
+  ]
+}/*EDITMODE-END*/;
+
+const App = () => {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+  // apply doc-level classes
+  React.useEffect(() => {
+    const doc = document.getElementById("doc");
+    if (!doc) return;
+    doc.classList.toggle("no-annot", !t.showAnnotations);
+    doc.classList.remove("loose", "tight", "balanced");
+    doc.classList.add(t.sketchDensity);
+    doc.classList.toggle("hide-a", !t.directions.includes("A"));
+    doc.classList.toggle("hide-b", !t.directions.includes("B"));
+    doc.classList.toggle("hide-c", !t.directions.includes("C"));
+  });
+
+  const dirToggle = (d) => {
+    const next = t.directions.includes(d)
+      ? t.directions.filter(x => x !== d)
+      : [...t.directions, d].sort();
+    if (next.length === 0) return;
+    setTweak("directions", next);
+  };
+
+  return (
+    <>
+      <Section id="style" num="00" kicker="THE VIBE" title="style frame" blurb="palette · type · components · motion. what every other screen inherits.">
+        <StyleFrame />
+      </Section>
+
+      <Section id="landing" num="01" kicker="MARKETING" title="landing — mobile" blurb="the pitch in three scrolls. sells the feeling, not the tech.">
+        <LandingScreen />
+      </Section>
+
+      <Section id="shop" num="02" kicker="THE SHOP" title="shop + product detail" blurb="editorial, never dense. one accent (clay) does the heavy lifting.">
+        <ShopScreen />
+      </Section>
+
+      <Section id="cart" num="03" kicker="TRANSACTION" title="cart · checkout · success" blurb="the boring part, made gentle. cart as bottom sheet wherever possible.">
+        <CartScreen />
+      </Section>
+
+      <Section id="activation" num="04" kicker="THE CRAFT MOMENT" title="activation flow" blurb="five small ceremonies. this is the deliverable that matters most.">
+        <ActivationScreen />
+      </Section>
+
+      <Section id="reveal" num="05" kicker="THE MAGIC" title="recipient reveal" blurb="three metaphors for opening. the only place we go big.">
+        <RevealScreen />
+      </Section>
+
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Document">
+          <TweakToggle label="Show annotations"
+            value={t.showAnnotations}
+            onChange={(v) => setTweak("showAnnotations", v)} />
+          <TweakRadio label="Sketch density"
+            value={t.sketchDensity}
+            onChange={(v) => setTweak("sketchDensity", v)}
+            options={[
+              { label: "loose", value: "loose" },
+              { label: "balanced", value: "balanced" },
+              { label: "tight", value: "tight" },
+            ]}
+          />
+        </TweakSection>
+        <TweakSection label="Directions visible">
+          <div style={{ display: "flex", gap: 6 }}>
+            {["A","B","C"].map(d => (
+              <button key={d} onClick={() => dirToggle(d)}
+                style={{
+                  flex: 1, padding: "8px 0", borderRadius: 8,
+                  border: "1px solid rgba(59,42,47,0.2)",
+                  background: t.directions.includes(d) ? "#C97B5A" : "transparent",
+                  color: t.directions.includes(d) ? "white" : "#3B2A2F",
+                  fontFamily: "'DM Sans', sans-serif", fontWeight: 500, fontSize: 13,
+                  cursor: "pointer",
+                }}>{d}</button>
+            ))}
+          </div>
+          <div style={{ fontFamily: "'Caveat', cursive", fontSize: 14, color: "rgba(59,42,47,0.6)", marginTop: 6 }}>
+            hide directions to compare side by side.
+          </div>
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById("app")).render(<App />);
+</script>
+
+<style id="__om-edit-overrides"></style>
+</body>
+</html>

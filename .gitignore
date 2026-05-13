@@ -1,0 +1,23 @@
+# local artifacts
+.design/
+.designs/
+.playwright-mcp/
+.claude/
+
+# screenshots from the QA loop
+qa-iter*.png
+qa-iter*.jpg
+
+# os / editor
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# node (none right now but future-proof)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+.env
+.env.local

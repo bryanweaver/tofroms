@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>to/froms · picks (B,B,A,A,A)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..600,30..100&family=DM+Sans:wght@400;500;600&family=Caveat:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="picks.css" />
+</head>
+<body data-screen-label="picks · approved directions">
+<main>
+  <header class="pdoc-head">
+    <div class="meta">
+      <span>PICKS · v0.2</span>
+      <span>1B · 2B · 3A · 4A · 5A</span>
+      <span>MID-FI · MOBILE 390×844</span>
+      <span>9 MAY 2026</span>
+    </div>
+    <h1 class="pdoc-title">picks — <em>tightened.</em></h1>
+    <p class="pdoc-sub">one direction per flow, with better proportions, real type sizes, and less marginalia. next pass: full mid-fi mocks with brand styling.</p>
+  </header>
+
+  <nav class="pdoc-toc">
+    <a href="#landing">01 · landing (B)</a>
+    <a href="#shop">02 · shop + PDP (B)</a>
+    <a href="#cart">03 · cart, checkout, success (A)</a>
+    <a href="#activation">04 · activation (A)</a>
+    <a href="#reveal">05 · reveal (A)</a>
+  </nav>
+
+  <div id="app"></div>
+
+  <footer class="pdoc-foot">
+    <span>picks doc · phase 1 of 3</span>
+    <span>next → mid-fi mocks → clickable prototype</span>
+  </footer>
+</main>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="picks.jsx"></script>
+
+<script type="text/babel">
+ReactDOM.createRoot(document.getElementById("app")).render(<PicksDoc />);
+</script>
+
+<style id="__om-edit-overrides"></style>
+</body>
+</html>

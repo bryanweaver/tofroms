@@ -1,0 +1,133 @@
+/* prototype-shell.css — shared "phone preview" mode for the interactive prototypes.
+   Strips the design-review bezel + side rail so the screen content fills the viewport.
+
+   - Auto-applied on viewports ≤ 720px (any mobile device gets it for free)
+   - Manually togglable on desktop via the "phone preview" button (adds .raw-mode to <body>)
+*/
+
+/* ─── shared page-enter motion primitive ─── */
+/* every navigation between .html pages gets a soft 240ms fade-rise so the journey reads as continuous, not as a slideshow of hard cuts. */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  body { animation: page-enter 0.32s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+}
+
+/* ─── shared raw-mode styles ─── */
+body.raw-mode,
+body.raw-mode html { background: var(--paper); }
+body.raw-mode::before { display: none; }
+body.raw-mode .side-controls { display: none; }
+body.raw-mode .replay { display: none; }
+body.raw-mode .stage {
+  margin-left: 0 !important;
+  padding: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  align-items: stretch;
+}
+body.raw-mode .ph {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  max-width: 100vw;
+  max-height: 100dvh;
+  border-radius: 0;
+  box-shadow: none;
+  isolation: auto;
+}
+body.raw-mode .ph::after { opacity: 0.18; }
+body.raw-mode .ph,
+body.raw-mode .screen-body,
+body.raw-mode .opened-screen { scrollbar-width: none; }
+body.raw-mode .ph::-webkit-scrollbar,
+body.raw-mode .screen-body::-webkit-scrollbar,
+body.raw-mode .opened-screen::-webkit-scrollbar { display: none; }
+/* hide the simulated phone chrome on real phones — the device has its own */
+body.raw-mode .ph-island,
+body.raw-mode .ph-home,
+body.raw-mode .ph-status { display: none; }
+body.raw-mode .screen { padding-top: max(env(safe-area-inset-top, 0px), 12px); }
+body.raw-mode .screen-foot { padding-bottom: max(env(safe-area-inset-bottom, 0px), 22px); }
+body.raw-mode .opened-screen { top: max(env(safe-area-inset-top, 0px), 12px); }
+body.raw-mode .topnav { padding-top: max(env(safe-area-inset-top, 0px), 12px); }
+
+/* ─── auto-apply on small viewports ─── */
+@media (max-width: 720px) {
+  body { background: var(--paper); }
+  body::before { display: none; }
+  .side-controls { display: none; }
+  .replay { display: none; }
+  .stage {
+    margin-left: 0 !important;
+    padding: 0;
+    min-height: 100vh;
+    min-height: 100dvh;
+    align-items: stretch;
+  }
+  .ph {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    max-width: 100vw;
+    max-height: 100dvh;
+    border-radius: 0;
+    box-shadow: none;
+    isolation: auto;
+  }
+  .ph::after { opacity: 0.18; }
+  .ph,
+  .screen-body,
+  .opened-screen { scrollbar-width: none; }
+  .ph::-webkit-scrollbar,
+  .screen-body::-webkit-scrollbar,
+  .opened-screen::-webkit-scrollbar { display: none; }
+  .ph-island, .ph-home, .ph-status { display: none; }
+  .screen { padding-top: max(env(safe-area-inset-top, 0px), 12px); }
+  .screen-foot { padding-bottom: max(env(safe-area-inset-bottom, 0px), 22px); }
+  .opened-screen { top: max(env(safe-area-inset-top, 0px), 12px); }
+  .topnav { padding-top: max(env(safe-area-inset-top, 0px), 12px); }
+}
+
+/* ─── desktop preview toggle ─── */
+.preview-toggle {
+  position: fixed; bottom: 22px; right: 22px; z-index: 60;
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 10px 16px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.08);
+  color: rgba(248,241,231,0.85);
+  border-radius: 999px;
+  font-family: var(--mono, ui-monospace, monospace);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  user-select: none;
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.preview-toggle:hover {
+  background: rgba(255,255,255,0.16);
+  color: var(--paper);
+  border-color: rgba(255,255,255,0.22);
+}
+.preview-toggle .dot { width: 6px; height: 6px; border-radius: 999px; background: var(--clay, #C97B5A); }
+.preview-toggle .label::before { content: "phone preview"; }
+body.raw-mode .preview-toggle {
+  background: rgba(248,241,231,0.85);
+  color: var(--plum, #3B2A2F);
+  border-color: rgba(59,42,47,0.12);
+}
+body.raw-mode .preview-toggle:hover {
+  background: var(--paper, #F8F1E7);
+}
+body.raw-mode .preview-toggle .dot { background: var(--sage, #7C8A6B); }
+body.raw-mode .preview-toggle .label::before { content: "design view"; }
+
+@media (max-width: 720px) {
+  .preview-toggle { display: none; }
+}

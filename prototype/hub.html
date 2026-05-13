@@ -1,0 +1,378 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>to/froms · prototypes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..700,30..100&family=DM+Sans:wght@400;500;600&family=Caveat:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --paper: #F8F1E7;
+  --paper-2: #F1E7D8;
+  --paper-3: #ECDFCC;
+  --blush: #F4D6CC;
+  --clay: #C97B5A;
+  --clay-2: #A85F40;
+  --sage: #7C8A6B;
+  --plum: #3B2A2F;
+  --ink-08: rgba(59,42,47,0.08);
+  --ink-12: rgba(59,42,47,0.12);
+  --ink-24: rgba(59,42,47,0.24);
+  --ink-40: rgba(59,42,47,0.40);
+  --ink-60: rgba(59,42,47,0.60);
+  --ink-80: rgba(59,42,47,0.80);
+  --serif: "Fraunces", Georgia, serif;
+  --sans: "DM Sans", system-ui, sans-serif;
+  --hand: "Caveat", cursive;
+  --mono: "JetBrains Mono", ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: var(--paper); color: var(--plum); font-family: var(--sans); -webkit-font-smoothing: antialiased; min-height: 100vh; }
+body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: 0.5;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.231  0 0 0 0 0.165  0 0 0 0 0.184  0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  mix-blend-mode: multiply;
+}
+main { position: relative; z-index: 1; max-width: 1240px; margin: 0 auto; padding: 64px 56px 96px; }
+.head { display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; padding-bottom: 28px; border-bottom: 1px solid var(--ink-12); }
+.kicker { font-family: var(--mono); font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--clay); }
+h1.title {
+  font-family: var(--serif); font-weight: 400; font-size: 88px; line-height: 0.92;
+  letter-spacing: -0.035em; margin: 14px 0 0; font-variation-settings: "SOFT" 70, "opsz" 144;
+}
+h1.title em { font-style: italic; color: var(--clay); }
+.sub { font-family: var(--hand); font-size: 28px; color: var(--ink-80); margin-top: 8px; line-height: 1.2; max-width: 520px; }
+.meta { font-family: var(--mono); font-size: 11px; color: var(--ink-60); letter-spacing: 0.1em; text-transform: uppercase; text-align: right; line-height: 1.7; }
+.meta .strong { color: var(--plum); }
+
+/* grid */
+.grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 24px; margin-top: 40px; }
+.card { grid-column: span 6; display: block; text-decoration: none; color: inherit; cursor: pointer; transition: transform 0.2s; }
+.card.feat { grid-column: span 12; }
+.card.small { grid-column: span 4; }
+.card:hover { transform: translateY(-3px); }
+.card:hover .preview { box-shadow: 0 30px 50px -30px rgba(59,42,47,0.4); }
+
+.preview {
+  position: relative; aspect-ratio: 4 / 3; border-radius: 18px; overflow: hidden;
+  background: var(--paper-2); border: 1px solid var(--ink-08);
+  display: flex; align-items: center; justify-content: center;
+  transition: box-shadow 0.3s;
+  box-shadow: 0 14px 30px -22px rgba(59,42,47,0.25);
+}
+.card.feat .preview { aspect-ratio: 24 / 9; }
+.card.small .preview { aspect-ratio: 1 / 1; }
+.preview::after {
+  content: ""; position: absolute; inset: 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='g'><feTurbulence type='fractalNoise' baseFrequency='1.4' numOctaves='2'/><feColorMatrix values='0 0 0 0 0.231  0 0 0 0 0.165  0 0 0 0 0.184  0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23g)'/></svg>");
+  mix-blend-mode: multiply; pointer-events: none;
+}
+.preview-num {
+  position: absolute; top: 14px; left: 16px;
+  font-family: var(--mono); font-size: 10px; letter-spacing: 0.14em;
+  color: var(--ink-60); z-index: 2;
+}
+.preview-tag {
+  position: absolute; top: 14px; right: 16px;
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--clay); z-index: 2;
+  padding: 4px 8px; border-radius: 999px;
+  background: rgba(248,241,231,0.7);
+  border: 1px solid var(--ink-08);
+}
+
+.card-foot {
+  display: flex; justify-content: space-between; align-items: baseline;
+  padding-top: 14px; gap: 16px;
+}
+.card-title {
+  font-family: var(--serif); font-weight: 400; font-size: 28px; line-height: 1.05;
+  letter-spacing: -0.02em; font-variation-settings: "SOFT" 70, "opsz" 96;
+}
+.card-title em { font-style: italic; color: var(--clay); }
+.card.small .card-title { font-size: 22px; }
+.card-desc { font-family: var(--sans); font-size: 14px; color: var(--ink-60); margin-top: 4px; max-width: 380px; }
+.card-arrow { font-family: var(--serif); font-size: 28px; font-style: italic; color: var(--clay); }
+
+.section-head { display: flex; align-items: baseline; gap: 16px; margin: 56px 0 -12px; }
+.section-head .lab { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-60); }
+.section-head .rule { flex: 1; height: 1px; background: var(--ink-12); }
+
+/* preview interior - small phone mock */
+.mini-ph {
+  width: 220px; height: 270px; background: var(--paper);
+  border-radius: 22px; border: 1px solid var(--ink-12);
+  position: relative; overflow: hidden;
+  box-shadow: 0 10px 24px -14px rgba(59,42,47,0.3);
+}
+.mini-ph .nub { position: absolute; top: 6px; left: 50%; transform: translateX(-50%); width: 60px; height: 16px; background: var(--plum); border-radius: 10px; }
+
+.feat-stage { display: flex; gap: 22px; align-items: center; justify-content: center; padding: 28px; width: 100%; }
+.feat-stage .mini-ph:nth-child(1) { transform: rotate(-3deg); }
+.feat-stage .mini-ph:nth-child(2) { transform: translateY(-10px); z-index: 2; }
+.feat-stage .mini-ph:nth-child(3) { transform: rotate(3deg); }
+
+/* sticker preview shape */
+.tile-sticker {
+  width: 130px; height: 130px; border-radius: 22px; background: var(--paper);
+  position: relative; box-shadow: 0 10px 20px -10px rgba(59,42,47,0.25);
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--ink-12);
+}
+.tile-sticker .glyph { font-family: var(--serif); font-style: italic; font-size: 48px; color: var(--clay); }
+.tile-sticker::before, .tile-sticker::after {
+  content: ""; position: absolute; width: 14px; height: 14px; background: var(--paper-3); border-radius: 50%;
+  box-shadow: inset 0 1px 2px rgba(59,42,47,0.18);
+}
+.tile-sticker::before { top: 10px; left: 10px; }
+.tile-sticker::after { bottom: 10px; right: 10px; }
+
+/* envelope tile */
+.tile-env {
+  width: 200px; height: 130px; background: var(--blush); border-radius: 8px; position: relative;
+  box-shadow: 0 14px 24px -16px rgba(59,42,47,0.3);
+}
+.tile-env::before { content: ""; position: absolute; inset: 0; border-radius: 8px; background: linear-gradient(170deg, transparent 50%, color-mix(in oklab, var(--blush) 70%, var(--clay)) 50%); }
+.tile-env::after {
+  content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  width: 60px; height: 60px; border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, color-mix(in oklab, var(--clay) 60%, white) 0%, var(--clay) 40%, var(--clay-2) 100%);
+  box-shadow: 0 4px 10px -2px rgba(201,123,90,0.6), inset 0 -2px 5px rgba(0,0,0,0.18);
+}
+
+/* shop preview */
+.tile-shop { display: flex; gap: 12px; padding: 14px; }
+.tile-shop .pack {
+  width: 76px; height: 100px; background: var(--paper-2); border-radius: 10px;
+  border: 1px dashed var(--ink-24);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--clay);
+  position: relative;
+}
+.tile-shop .pack.on { background: var(--paper); box-shadow: 0 8px 16px -8px rgba(59,42,47,0.25); transform: scale(1.05); }
+.tile-shop .pack .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--clay); }
+
+/* wireframe preview */
+.tile-wire {
+  width: 240px; height: 220px;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 22px, rgba(59,42,47,0.06) 22px 23px),
+    repeating-linear-gradient(90deg, transparent 0 22px, rgba(59,42,47,0.06) 22px 23px);
+  border-radius: 12px; border: 1px solid var(--ink-12);
+  position: relative;
+  padding: 14px;
+}
+.tile-wire::before {
+  content: ""; position: absolute; top: 14px; left: 14px; width: 80px; height: 8px;
+  background: var(--clay); border-radius: 2px;
+}
+.tile-wire::after {
+  content: ""; position: absolute; top: 30px; left: 14px; width: 150px; height: 4px;
+  background: var(--ink-24); border-radius: 2px;
+  box-shadow: 0 8px 0 var(--ink-24), 0 16px 0 var(--ink-24);
+}
+
+/* sticker grid tile */
+.tile-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; padding: 20px; width: 100%; max-width: 280px; }
+.tile-grid .chip {
+  aspect-ratio: 1; background: var(--paper); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-style: italic; color: var(--clay); font-size: 16px;
+  box-shadow: 0 4px 10px -4px rgba(59,42,47,0.2);
+}
+.tile-grid .chip.muted { background: var(--paper-2); color: var(--ink-40); box-shadow: none; border: 1px dashed var(--ink-24); }
+
+/* picks preview */
+.tile-picks { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 20px; width: 100%; max-width: 280px; }
+.tile-picks .opt {
+  aspect-ratio: 4 / 3; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-style: italic; font-size: 14px;
+  position: relative;
+}
+.tile-picks .opt.a { background: var(--paper-3); color: var(--plum); }
+.tile-picks .opt.b { background: var(--blush); color: var(--clay-2); }
+.tile-picks .opt.c { background: var(--plum); color: var(--paper); }
+.tile-picks .opt.d { background: var(--sage); color: var(--paper); }
+
+/* footer */
+.foot {
+  margin-top: 96px; padding-top: 32px; border-top: 1px solid var(--ink-12);
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-60);
+}
+.foot .hand { font-family: var(--hand); font-size: 18px; color: var(--ink-80); text-transform: none; letter-spacing: 0; }
+
+@media (max-width: 900px) {
+  main { padding: 32px 24px 64px; }
+  h1.title { font-size: 56px; }
+  .head { flex-direction: column; align-items: flex-start; }
+  .meta { text-align: left; }
+  .card, .card.small, .card.feat { grid-column: span 12; }
+}
+</style>
+</head>
+<body data-screen-label="00 prototypes hub">
+<main>
+
+  <header class="head">
+    <div>
+      <span class="kicker">to/froms · prototype index · v0.4</span>
+      <h1 class="title">the work, <em>so far.</em></h1>
+      <p class="sub">six prototypes. one product. pick a thread and pull.</p>
+    </div>
+    <div class="meta">
+      <span class="strong">prepared by claude design</span><br/>
+      12 may 2026<br/>
+      <span style="color: var(--clay);">internal review — draft</span>
+    </div>
+  </header>
+
+  <div class="section-head">
+    <span class="lab">01 · core flows</span>
+    <span class="rule"></span>
+    <span class="lab">hi-fi, mobile</span>
+  </div>
+
+  <div class="grid">
+    <a class="card feat" href="prototype.html" data-screen-label="card · activation + reveal">
+      <div class="preview">
+        <span class="preview-num">01 · activation + reveal</span>
+        <span class="preview-tag">hi-fi · prototype</span>
+        <div class="feat-stage">
+          <div class="mini-ph"><div class="nub"></div></div>
+          <div class="mini-ph" style="background: var(--blush);">
+            <div class="nub"></div>
+            <div style="position:absolute; inset: 30px 24px; display:flex; align-items:center; justify-content:center;">
+              <div style="width: 80px; height: 80px; border-radius: 50%; background: radial-gradient(circle at 32% 28%, color-mix(in oklab, var(--clay) 60%, white) 0%, var(--clay) 40%, var(--clay-2) 100%); box-shadow: 0 6px 14px -2px rgba(201,123,90,0.6);"></div>
+            </div>
+          </div>
+          <div class="mini-ph"><div class="nub"></div></div>
+        </div>
+      </div>
+      <div class="card-foot">
+        <div>
+          <div class="card-title">activation &amp; <em>reveal.</em></div>
+          <div class="card-desc">the sender seals a card to a sticker; the recipient opens it. the emotional core of the product.</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="shop.html" data-screen-label="card · shop">
+      <div class="preview">
+        <span class="preview-num">02 · shop &amp; checkout</span>
+        <span class="preview-tag">hi-fi</span>
+        <div class="tile-shop">
+          <div class="pack">love</div>
+          <div class="pack on"><span class="dot"></span>thanks</div>
+          <div class="pack">sorry</div>
+        </div>
+      </div>
+      <div class="card-foot">
+        <div>
+          <div class="card-title">shop &amp; <em>checkout.</em></div>
+          <div class="card-desc">browse packs, add to cart, ship to a friend. PDP, cart drawer, address &amp; payment.</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="scan.html" data-screen-label="card · scan + account">
+      <div class="preview">
+        <span class="preview-num">03 · first scan + account</span>
+        <span class="preview-tag">hi-fi · new</span>
+        <div class="tile-grid">
+          <div class="chip">♡</div>
+          <div class="chip">♡</div>
+          <div class="chip muted">·</div>
+          <div class="chip">♡</div>
+          <div class="chip muted">·</div>
+          <div class="chip muted">·</div>
+          <div class="chip muted">·</div>
+          <div class="chip muted">·</div>
+          <div class="chip muted">·</div>
+        </div>
+      </div>
+      <div class="card-foot">
+        <div>
+          <div class="card-title">scan &amp; <em>account.</em></div>
+          <div class="card-desc">the moment a sticker is scanned — branches into sender claim or recipient open. account home, library, drafts, alerts, per-card detail.</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+  </div>
+
+  <div class="section-head">
+    <span class="lab">02 · exploration</span>
+    <span class="rule"></span>
+    <span class="lab">wireframe + style</span>
+  </div>
+
+  <div class="grid">
+    <a class="card small" href="wireframes.html" data-screen-label="card · wireframes">
+      <div class="preview">
+        <span class="preview-num">04</span>
+        <span class="preview-tag">mid-fi</span>
+        <div class="tile-wire"></div>
+      </div>
+      <div class="card-foot">
+        <div>
+          <div class="card-title">wireframes <em>doc.</em></div>
+          <div class="card-desc">three layout directions per flow. annotations are decisions.</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card small" href="midfi.html" data-screen-label="card · midfi frames">
+      <div class="preview">
+        <span class="preview-num">05</span>
+        <span class="preview-tag">mid-fi · frames</span>
+        <div style="display:flex; gap: 12px;">
+          <div class="mini-ph" style="width: 100px; height: 140px;"><div class="nub" style="width: 36px; height: 10px;"></div></div>
+          <div class="mini-ph" style="width: 100px; height: 140px; background: var(--paper-2);"><div class="nub" style="width: 36px; height: 10px;"></div></div>
+        </div>
+      </div>
+      <div class="card-foot">
+        <div>
+          <div class="card-title">mid-fi <em>frames.</em></div>
+          <div class="card-desc">screens before paint. layout, hierarchy, intent.</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card small" href="picks.html" data-screen-label="card · picks">
+      <div class="preview">
+        <span class="preview-num">06</span>
+        <span class="preview-tag">style · picks</span>
+        <div class="tile-picks">
+          <div class="opt a">A</div>
+          <div class="opt b">B</div>
+          <div class="opt c">C</div>
+          <div class="opt d">D</div>
+        </div>
+      </div>
+      <div class="card-foot">
+        <div>
+          <div class="card-title">style <em>picks.</em></div>
+          <div class="card-desc">type, color, sticker mark — side-by-side directions for review.</div>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+  </div>
+
+  <footer class="foot">
+    <span>to/froms · prototype index</span>
+    <span class="hand">scrappy, but earnest.</span>
+    <span>12 may 2026</span>
+  </footer>
+
+</main>
+</body>
+</html>
